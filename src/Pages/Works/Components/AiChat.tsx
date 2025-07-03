@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, Send, X, MessageCircle, Sparkles, Calculator, TrendingUp, Settings, Download, RotateCcw } from 'lucide-react';
+import { Bot, Send, X, MessageCircle, Sparkles, Calculator, TrendingUp, Download, RotateCcw } from 'lucide-react';
 
 // Mock useAiChat hook
 const useAiChat = () => {
@@ -174,9 +174,9 @@ const VeritasChat = () => {
 // New Veritas Graphic Component
 const VeritasGraphic = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [function1, setFunction1] = useState('sin(x)');
-  const [function2, setFunction2] = useState('');
-  const [function3, setFunction3] = useState('');
+  const [] = useState('sin(x)');
+  const [] = useState('');
+  const [] = useState('');
   const [xMin, setXMin] = useState(-10);
   const [xMax, setXMax] = useState(10);
   const [yMin, setYMin] = useState(-5);
