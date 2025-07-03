@@ -25,6 +25,15 @@ const whyChooseMeIcons = {
   Lightbulb
 };
 
+const defaultGradients = {
+  Zap: 'from-yellow-500 to-orange-500',
+  Target: 'from-red-500 to-pink-500', 
+  Users: 'from-blue-500 to-cyan-500',
+  Trophy: 'from-amber-500 to-yellow-500',
+  Clock: 'from-green-500 to-emerald-500',
+  Lightbulb: 'from-purple-500 to-violet-500'
+};
+
 // Componente per il typing effect
 type TypingTextProps = {
   text?: string;
@@ -512,6 +521,12 @@ function Home() {
                 .sort((a, b) => a.sort_order - b.sort_order)
                 .map((item, index) => {
                   const IconComponent = whyChooseMeIcons[item.icon as keyof typeof whyChooseMeIcons] || Lightbulb;
+                  
+                  // Fixed gradient logic - use item.gradient if available, otherwise use default
+                  const iconGradient = item.gradient || 
+                                      defaultGradients[item.icon as keyof typeof defaultGradients] || 
+                                      'from-violet-500 to-purple-500';
+                  
                   return (
                     <StaggeredContent 
                       key={item.id} 
@@ -525,7 +540,8 @@ function Home() {
                         <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-violet-600/10 to-cyan-600/10 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-700"></div>
                         
                         <div className="relative">
-                          <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-r ${item.gradient} mb-6 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-500 shadow-lg`}>
+                          {/* Fixed icon container with proper gradient */}
+                          <div className={`inline-flex p-3 rounded-2xl bg-gradient-to-r ${iconGradient} mb-6 group-hover:scale-110 group-hover:shadow-2xl transition-all duration-500 shadow-lg`}>
                             <IconComponent className="w-6 h-6 text-white drop-shadow-lg" />
                           </div>
                           
@@ -555,7 +571,7 @@ function Home() {
                 })}
             </div>
           </div>
-        </section>
+</section>
 
         {/* Contact Section */}
 <section id="contact" className="py-32 relative">
