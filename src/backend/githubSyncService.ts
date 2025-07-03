@@ -20,14 +20,6 @@ interface GitHubApiResponse {
   total_count: number;
 }
 
-interface Technology {
-  id: number;
-  name: string;
-  color: string | null;
-  icon: string | null;
-  category: string | null;
-  is_active: boolean;
-}
 
 class GitHubSyncService {
   private readonly GITHUB_TOKEN: string;
@@ -106,7 +98,7 @@ class GitHubSyncService {
     const normalizedName = technologyName.toLowerCase();
     
     // Prima prova a recuperare la technology esistente
-    const { data: existingTechnology, error: fetchError } = await supabase
+    const { data: existingTechnology } = await supabase
       .from('technologies')
       .select('id')
       .eq('name', normalizedName)
@@ -198,7 +190,7 @@ class GitHubSyncService {
    */
   private async getOrCreateCategory(categoryName: string): Promise<number> {
     // Prima prova a recuperare la categoria esistente
-    const { data: existingCategory, error: fetchError } = await supabase
+    const { data: existingCategory } = await supabase
       .from('categories')
       .select('id')
       .eq('name', categoryName.toLowerCase())

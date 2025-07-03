@@ -1,24 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Bot, Send, X, MessageCircle, Sparkles, Github, ExternalLink, Code } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Github, Code } from 'lucide-react';
 
 // Import types
-import type { Project, WorksData, Message } from './Components/type';
+import type { Project, WorksData } from './Components/type';
 
 // Import constants
 import { CATEGORIES } from './Components/categories';
-import { AI_RESPONSES } from './Components/responseAi';
 
 // Import hooks
 import { useAuth } from '../../hooks/useAuth';
 import { useWorksData } from '../../hooks/usePortfolioCache';
 import { useStarsAnimation } from './Components/useStarsAnimation';
-import { useAiChat } from './Components/useAiChat';
 
 // Import components
 import Navbar from '../Navbar';
 import { AnimatedBackground } from './Components/AnimatedBackground';
-import { CategorySelector } from './Components/CategorySelector';
-import { ProjectsList } from './Components/ProjectList';
 import { AiChat } from './Components/AiChat';
 
 // ✨ Typing Text Component (riutilizzato da Home)
@@ -372,7 +368,7 @@ export function Works() {
   const { isAuthenticated, logout } = useAuth();
   
   // ✨ Usa il hook ottimizzato per i portfolio data
-  const { data: portfolioData, worksData, error, refreshData, clearCache, getCacheInfo } = useWorksData() as unknown as {
+  const { worksData, error, refreshData, clearCache, getCacheInfo } = useWorksData() as unknown as {
     data: any;
     worksData: WorksData;
     error: any;

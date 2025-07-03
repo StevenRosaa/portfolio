@@ -174,7 +174,7 @@ function Home() {
     }, []);
 
     // State per controllare la posizione delle stelle
-    const [stars, setStars] = useState(starsData);
+    const [, setStars] = useState(starsData);
 
     // Effetto per cambiare posizione delle stelle ogni 8-12 secondi
     useEffect(() => {
