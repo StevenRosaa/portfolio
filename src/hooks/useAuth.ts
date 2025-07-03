@@ -23,7 +23,7 @@ class SecureCookieManager {
     const sameSite = isSecure ? '; SameSite=Strict' : '; SameSite=Lax'
     
     document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/${sameSite}${secureFlag}`
-    console.log(`🍪 Cookie impostato: ${name} (scadenza: ${expires.toLocaleDateString()})`)
+    //console.log(`🍪 Cookie impostato: ${name} (scadenza: ${expires.toLocaleDateString()})`)
   }
 
   static getCookie(name: string): string | null {
@@ -47,13 +47,13 @@ class SecureCookieManager {
     if (location.protocol === 'https:') {
       document.cookie = deleteCookieString + '; SameSite=Strict; Secure'
     }
-    console.log(`🍪 Cookie eliminato: ${name}`)
+    //console.log(`🍪 Cookie eliminato: ${name}`)
   }
 
   static deleteAllAuthCookies(): void {
     const cookiesToDelete = ['auth_token', 'session_id', 'user_id', 'user_email', 'remember_me', 'session_expires', 'last_activity']
     cookiesToDelete.forEach(cookie => this.deleteCookie(cookie))
-    console.log('🧹 Tutti i cookie di autenticazione eliminati')
+    //console.log('🧹 Tutti i cookie di autenticazione eliminati')
   }
 
   static saveAuthToken(token: string, rememberMe: boolean): void {
@@ -80,7 +80,7 @@ class SessionManager {
   // STRATEGIA: Prima salva nei cookie, poi tenta il DB
   static async createSession(userId: string, email: string, token: string, rememberMe: boolean = false): Promise<void> {
     try {
-      console.log('✅ Creo sessione locale (cookie)...')
+      //console.log('✅ Creo sessione locale (cookie)...')
       
       // 1. PRIMA: Salva SEMPRE nei cookie (essenziale)
       const cookieExpiry = rememberMe ? 30 : 7
@@ -99,21 +99,12 @@ class SessionManager {
       // Inizializza l'attività
       SecureCookieManager.updateLastActivity()
 
-      console.log('✅ Sessione locale creata:', { 
-        userId, 
-        email, 
-        rememberMe, 
-        tokenExpiry: rememberMe ? '30 giorni' : '8 ore',
-        cookieExpiry: `${cookieExpiry} giorni`,
-        sessionScade: new Date(expiresAt).toLocaleString()
-      })
-
       // 2. POI: Tenta di salvare nel DB (non bloccante)
       try {
         await AuthService.createSession(userId, email, rememberMe)
-        console.log('✅ Sessione salvata anche nel database')
+        //console.log('✅ Sessione salvata anche nel database')
       } catch (dbError) {
-        console.warn('⚠️ Errore salvataggio sessione DB (ma continuo comunque):', dbError)
+        //console.warn('⚠️ Errore salvataggio sessione DB (ma continuo comunque):', dbError)
         // NON lanciare errore - la sessione locale è sufficiente
       }
       
@@ -121,7 +112,7 @@ class SessionManager {
       this.startActivityCheck()
 
     } catch (error) {
-      console.error('❌ Errore nella creazione della sessione:', error)
+      //console.error('❌ Errore nella creazione della sessione:', error)
       throw error
     }
   }
@@ -129,7 +120,7 @@ class SessionManager {
   // VERIFICA SESSIONE: Prima controlla i cookie, poi eventualmente il DB
   static async isSessionValid(): Promise<{ isValid: boolean; user?: any }> {
     try {
-      console.log('🔍 Verifico validità sessione...')
+      //console.log('🔍 Verifico validità sessione...')
       
       // 1. Controlla i dati locali (cookie)
       const token = SecureCookieManager.getAuthToken()
@@ -139,14 +130,14 @@ class SessionManager {
       const sessionExpires = SecureCookieManager.getCookie('session_expires')
 
       if (!token || !userId || !userEmail) {
-        console.log('❌ Dati sessione mancanti nei cookie')
+        //console.log('❌ Dati sessione mancanti nei cookie')
         return { isValid: false }
       }
 
       // 2. Verifica il token JWT (locale, veloce)
       const tokenPayload = AuthService.verifyToken(token)
       if (!tokenPayload) {
-        console.log('❌ Token JWT non valido o scaduto')
+        //console.log('❌ Token JWT non valido o scaduto')
         return { isValid: false }
       }
 
@@ -156,7 +147,7 @@ class SessionManager {
         const now = Date.now()
         
         if (now > expiresAt) {
-          console.log('⏰ Sessione scaduta (controllo locale)')
+          //console.log('⏰ Sessione scaduta (controllo locale)')
           return { isValid: false }
         }
 
@@ -166,7 +157,7 @@ class SessionManager {
           const inactivityLimit = 2 * 60 * 60 * 1000 // 2 ore
           
           if (lastActivity && (now - lastActivity) > inactivityLimit) {
-            console.log('😴 Sessione scaduta per inattività')
+            //console.log('😴 Sessione scaduta per inattività')
             return { isValid: false }
           }
         }
@@ -176,25 +167,25 @@ class SessionManager {
       try {
         const isDbSessionValid = await AuthService.isSessionValid(userId, true)
         if (!isDbSessionValid) {
-          console.warn('⚠️ Sessione non valida nel database, ma token locale OK')
+          //console.warn('⚠️ Sessione non valida nel database, ma token locale OK')
           // Decidi qui: vuoi invalidare anche se il token è OK?
           // Per ora proseguiamo con la sessione locale
         }
       } catch (dbError) {
-        console.warn('⚠️ Errore controllo DB (continuo con sessione locale):', dbError)
+        //console.warn('⚠️ Errore controllo DB (continuo con sessione locale):', dbError)
       }
 
       // 5. Aggiorna attività se tutto OK
       SecureCookieManager.updateLastActivity()
 
-      console.log('✅ Sessione locale valida confermata')
+      //console.log('✅ Sessione locale valida confermata')
       return { 
         isValid: true, 
         user: { id: userId, email: userEmail } 
       }
 
     } catch (error) {
-      console.error('❌ Errore nella verifica della sessione:', error)
+      //console.error('❌ Errore nella verifica della sessione:', error)
       return { isValid: false }
     }
   }
@@ -208,12 +199,12 @@ class SessionManager {
       // 2. Prova ad aggiornare il DB (non bloccante)
       try {
         await AuthService.updateLastActivity(userId)
-        console.log('🔄 Attività aggiornata (locale + DB)')
+        //console.log('🔄 Attività aggiornata (locale + DB)')
       } catch (dbError) {
-        console.warn('⚠️ Errore aggiornamento attività DB (locale OK):', dbError)
+        //console.warn('⚠️ Errore aggiornamento attività DB (locale OK):', dbError)
       }
     } catch (error) {
-      console.error('❌ Errore aggiornamento attività:', error)
+      //console.error('❌ Errore aggiornamento attività:', error)
     }
   }
 
@@ -230,15 +221,15 @@ class SessionManager {
       if (userId) {
         try {
           await AuthService.logout(userId)
-          console.log('🗑️ Logout DB completato')
+          //console.log('🗑️ Logout DB completato')
         } catch (dbError) {
-          console.warn('⚠️ Errore logout DB (locale OK):', dbError)
+          //console.warn('⚠️ Errore logout DB (locale OK):', dbError)
         }
       }
       
-      console.log('🗑️ Sessione locale distrutta')
+      //console.log('🗑️ Sessione locale distrutta')
     } catch (error) {
-      console.error('❌ Errore distruzione sessione:', error)
+      //console.error('❌ Errore distruzione sessione:', error)
     }
   }
 
@@ -280,7 +271,7 @@ class SessionManager {
         lastActivity: lastActivity || null
       }
     } catch (error) {
-      console.error('❌ Errore recupero info sessione:', error)
+      //console.error('❌ Errore recupero info sessione:', error)
       return { 
         expiresAt: null, 
         remainingTime: 0, 
@@ -301,13 +292,13 @@ class SessionManager {
       if (refreshedToken && refreshedToken !== token) {
         const rememberMe = SecureCookieManager.getCookie('remember_me') === 'true'
         SecureCookieManager.saveAuthToken(refreshedToken, rememberMe)
-        console.log('🔄 Token rinnovato automaticamente')
+        //console.log('🔄 Token rinnovato automaticamente')
         return true
       }
 
       return false
     } catch (error) {
-      console.error('❌ Errore rinnovo token:', error)
+      //console.error('❌ Errore rinnovo token:', error)
       return false
     }
   }
@@ -317,7 +308,7 @@ class SessionManager {
     if (this.activityTimer || this.isInitialized) return
 
     this.isInitialized = true
-    console.log('⏰ Avvio controllo attività periodico (ogni 5 minuti)')
+    //console.log('⏰ Avvio controllo attività periodico (ogni 5 minuti)')
 
     this.activityTimer = setInterval(async () => {
       const userId = SecureCookieManager.getCookie('user_id')
@@ -351,7 +342,7 @@ class SessionManager {
     // Aggiorna quando la finestra torna in focus
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
-        console.log('👁️ Finestra tornata in focus')
+        //console.log('👁️ Finestra tornata in focus')
         SecureCookieManager.updateLastActivity()
       }
     })
@@ -369,7 +360,7 @@ class SessionManager {
     }
     
     this.isInitialized = false
-    console.log('🛑 Tutti i timer fermati')
+    //console.log('🛑 Tutti i timer fermati')
   }
 }
 
@@ -386,7 +377,7 @@ export const useAuth = () => {
 
   // Inizializzazione
   useEffect(() => {
-    console.log('🚀 Inizializzazione hook useAuth...')
+    //console.log('🚀 Inizializzazione hook useAuth...')
     checkExistingSession()
   }, [])
 
@@ -394,13 +385,13 @@ export const useAuth = () => {
   useEffect(() => {
     if (!authState.isAuthenticated) return
 
-    console.log('⏰ Avvio controllo periodico validità sessione (ogni 2 minuti)')
+    //console.log('⏰ Avvio controllo periodico validità sessione (ogni 2 minuti)')
     
     const sessionCheckInterval = setInterval(async () => {
       const { isValid, user } = await SessionManager.isSessionValid()
       
       if (!isValid) {
-        console.log('⚠️ Sessione non più valida, effettuo logout automatico')
+        //console.log('⚠️ Sessione non più valida, effettuo logout automatico')
         await logout()
       } else if (user) {
         await SessionManager.updateActivity(user.id)
@@ -409,19 +400,19 @@ export const useAuth = () => {
 
     return () => {
       clearInterval(sessionCheckInterval)
-      console.log('🛑 Controllo periodico sessione fermato')
+      //console.log('🛑 Controllo periodico sessione fermato')
     }
   }, [authState.isAuthenticated])
 
   // Controlla se esiste una sessione valida
   const checkExistingSession = async () => {
-    console.log('🔍 Controllo sessione esistente...')
+    //console.log('🔍 Controllo sessione esistente...')
     
     try {
       const { isValid, user } = await SessionManager.isSessionValid()
       
       if (isValid && user) {
-        console.log('✅ Sessione esistente valida trovata')
+        //console.log('✅ Sessione esistente valida trovata')
         
         setAuthState({
           isAuthenticated: true,
@@ -433,26 +424,16 @@ export const useAuth = () => {
         })
 
         // Mostra info sessione
-        const sessionInfo = await SessionManager.getSessionInfo()
-        const tokenHours = sessionInfo.tokenExpiresIn ? Math.round(sessionInfo.tokenExpiresIn / (1000 * 60 * 60)) : 0
-        const sessionHours = sessionInfo.remainingTime ? Math.round(sessionInfo.remainingTime / (1000 * 60 * 60)) : 0
-        
-        console.log('📊 Info sessione esistente:', {
-          rememberMe: sessionInfo.rememberMe,
-          tokenScadeIn: `${tokenHours} ore`,
-          sessioneScadeIn: sessionInfo.rememberMe ? `${Math.round(sessionInfo.remainingTime / (1000 * 60 * 60 * 24))} giorni` : `${sessionHours} ore`,
-          ultimaAttivita: sessionInfo.lastActivity ? new Date(sessionInfo.lastActivity).toLocaleString() : 'N/A'
-        })
         
         return
       }
 
-      console.log('❌ Nessuna sessione valida trovata')
+      //console.log('❌ Nessuna sessione valida trovata')
       SecureCookieManager.deleteAllAuthCookies()
       setAuthState(prev => ({ ...prev, isLoading: false }))
       
     } catch (error) {
-      console.error('❌ Errore nel controllo della sessione:', error)
+      //console.error('❌ Errore nel controllo della sessione:', error)
       SecureCookieManager.deleteAllAuthCookies()
       setAuthState(prev => ({ ...prev, isLoading: false, error: 'Errore nel caricamento della sessione' }))
     }
@@ -460,15 +441,15 @@ export const useAuth = () => {
 
   // LOGIN
   const login = async (email: string, password: string, rememberMe: boolean = false): Promise<LoginResult> => {
-    console.log('🔐 Inizio processo di login...', { email, rememberMe })
+    //console.log('🔐 Inizio processo di login...', { email, rememberMe })
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }))
 
     try {
       const result = await AuthService.login(email, password, rememberMe)
-      console.log('📊 Risultato login dal server:', { success: result.success, hasUser: !!result.user, hasToken: !!result.token })
+      //console.log('📊 Risultato login dal server:', { success: result.success, hasUser: !!result.user, hasToken: !!result.token })
 
       if (result.success && result.user && result.token) {
-        console.log('✅ Login riuscito, creo sessione persistente...')
+        //console.log('✅ Login riuscito, creo sessione persistente...')
         
         // Crea sessione con strategia resiliente
         await SessionManager.createSession(
@@ -486,24 +467,8 @@ export const useAuth = () => {
           isLocked: false,
           remainingAttempts: 5
         })
-
-        // Mostra informazioni sulla sessione
-        const sessionInfo = await SessionManager.getSessionInfo()
-        const tokenHours = Math.round(sessionInfo.tokenExpiresIn / (1000 * 60 * 60))
-        const sessionDuration = rememberMe 
-          ? Math.round(sessionInfo.remainingTime / (1000 * 60 * 60 * 24))
-          : Math.round(sessionInfo.remainingTime / (1000 * 60 * 60))
-        
-        console.log('🎉 Autenticazione completata con successo!')
-        console.log('⏰ Durata sessione:', {
-          rememberMe,
-          tokenValido: `${tokenHours} ore`,
-          sessioneValida: rememberMe ? `${sessionDuration} giorni` : `${sessionDuration} ore`,
-          cookieScadenza: rememberMe ? '30 giorni' : '7 giorni'
-        })
-        
       } else {
-        console.log('❌ Login fallito:', result.error)
+        //console.log('❌ Login fallito:', result.error)
         setAuthState(prev => ({
           ...prev,
           isLoading: false,
@@ -515,7 +480,7 @@ export const useAuth = () => {
 
       return result
     } catch (error) {
-      console.error('❌ Errore durante il login:', error)
+      //console.error('❌ Errore durante il login:', error)
       const errorMessage = 'Errore di connessione al server'
       setAuthState(prev => ({
         ...prev,
@@ -532,7 +497,7 @@ export const useAuth = () => {
 
   // LOGOUT
   const logout = async () => {
-    console.log('👋 Inizio processo di logout...')
+    //console.log('👋 Inizio processo di logout...')
     const userId = SecureCookieManager.getCookie('user_id')
     
     await SessionManager.destroySession(userId || undefined)
@@ -546,20 +511,20 @@ export const useAuth = () => {
       remainingAttempts: 5
     })
 
-    console.log('✅ Logout completato con successo')
+    //console.log('✅ Logout completato con successo')
   }
 
   // LOGOUT DA TUTTI I DISPOSITIVI
   const logoutFromAllDevices = async () => {
-    console.log('👋 Logout da tutti i dispositivi...')
+    //console.log('👋 Logout da tutti i dispositivi...')
     const userId = SecureCookieManager.getCookie('user_id')
     
     if (userId) {
       try {
         await AuthService.logoutFromAllDevices(userId)
-        console.log('✅ Logout DB da tutti i dispositivi completato')
+        //console.log('✅ Logout DB da tutti i dispositivi completato')
       } catch (error) {
-        console.warn('⚠️ Errore logout DB da tutti i dispositivi:', error)
+        //console.warn('⚠️ Errore logout DB da tutti i dispositivi:', error)
       }
     }
     
@@ -574,7 +539,7 @@ export const useAuth = () => {
       remainingAttempts: 5
     })
 
-    console.log('✅ Logout da tutti i dispositivi completato')
+    //console.log('✅ Logout da tutti i dispositivi completato')
   }
 
   // UTILITÀ
@@ -582,7 +547,7 @@ export const useAuth = () => {
     try {
       return await AuthService.getRemainingLockoutTime(email)
     } catch (error) {
-      console.error('❌ Errore tempo lockout:', error)
+      //console.error('❌ Errore tempo lockout:', error)
       return 0
     }
   }
@@ -595,7 +560,7 @@ export const useAuth = () => {
   useEffect(() => {
     return () => {
       // Non fermare i timer qui perché potrebbero essere necessari per altre istanze
-      console.log('🧹 Hook useAuth smontato')
+      //console.log('🧹 Hook useAuth smontato')
     }
   }, [])
 

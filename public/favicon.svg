@@ -1,0 +1,46 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient principale per le lettere -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#A855F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradient per il glow effect -->
+    <linearGradient id="glowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:0.4" />
+    </linearGradient>
+    
+    <!-- Blur filter per effetto glow -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Drop shadow -->
+    <filter id="dropshadow">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle con effetto glow -->
+  <circle cx="16" cy="16" r="14" fill="url(#glowGradient)" opacity="0.2"/>
+  
+  <!-- Testo GP -->
+  <text x="16" y="20" 
+        font-family="system-ui, -apple-system, sans-serif" 
+        font-size="12" 
+        font-weight="600" 
+        text-anchor="middle" 
+        fill="url(#textGradient)"
+        filter="url(#glow)"
+        style="letter-spacing: 0.5px;">GP</text>
+  
+  <!-- Sottile bordo esterno -->
+  <circle cx="16" cy="16" r="15" fill="none" stroke="url(#textGradient)" stroke-width="0.5" opacity="0.3"/>
+</svg>

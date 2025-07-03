@@ -113,13 +113,13 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
-        console.error('Error checking technology:', error);
+        //console.error('Error checking technology:', error);
         return null;
       }
 
       return technology || null;
     } catch (err) {
-      console.error('Error in checkTechnologyExists:', err);
+      //console.error('Error in checkTechnologyExists:', err);
       return null;
     }
   }, []);
@@ -155,10 +155,10 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
         throw new Error(`Error creating technology: ${createError.message}`);
       }
 
-      console.log(`Created new technology: ${normalizedName}`);
+      //console.log(`Created new technology: ${normalizedName}`);
       return newTechnology;
     } catch (err) {
-      console.error('Error in getOrCreateTechnology:', err);
+      //console.error('Error in getOrCreateTechnology:', err);
       throw err;
     }
   }, [checkTechnologyExists]);
@@ -175,7 +175,7 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
         .single();
 
       if (existingAssociation) {
-        console.log(`Technology ${technologyId} already associated with project ${projectId}`);
+        //console.log(`Technology ${technologyId} already associated with project ${projectId}`);
         return true;
       }
 
@@ -188,14 +188,14 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
         });
 
       if (insertError) {
-        console.error('Error adding technology to project:', insertError);
+        //console.error('Error adding technology to project:', insertError);
         return false;
       }
 
-      console.log(`Added technology ${technologyId} to project ${projectId}`);
+      //console.log(`Added technology ${technologyId} to project ${projectId}`);
       return true;
     } catch (err) {
-      console.error('Error in addTechnologyToProject:', err);
+      //console.error('Error in addTechnologyToProject:', err);
       return false;
     }
   }, []);
@@ -211,7 +211,7 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
       );
 
       if (technologyTopics.length === 0) {
-        console.log(`No technology topics found for project ${projectId}`);
+        //console.log(`No technology topics found for project ${projectId}`);
         return true;
       }
 
@@ -222,7 +222,7 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
         .eq('project_id', projectId);
 
       if (deleteError) {
-        console.error(`Error removing existing project technologies:`, deleteError);
+        //console.error(`Error removing existing project technologies:`, deleteError);
         return false;
       }
 
@@ -237,7 +237,7 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
             technology_id: technology.id
           });
         } catch (error) {
-          console.error(`Error processing technology ${topic}:`, error);
+          //console.error(`Error processing technology ${topic}:`, error);
         }
       }
 
@@ -247,16 +247,16 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
           .insert(projectTechnologies);
 
         if (insertError) {
-          console.error(`Error creating project technologies:`, insertError);
+          //console.error(`Error creating project technologies:`, insertError);
           return false;
         }
 
-        console.log(`Added ${projectTechnologies.length} technologies to project ${projectId}`);
+        //console.log(`Added ${projectTechnologies.length} technologies to project ${projectId}`);
       }
 
       return true;
     } catch (err) {
-      console.error('Error in syncProjectTechnologies:', err);
+      //console.error('Error in syncProjectTechnologies:', err);
       return false;
     }
   }, [getOrCreateTechnology]);
@@ -280,7 +280,7 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
         .eq('project_id', projectId);
 
       if (error) {
-        console.error('Error fetching project technologies:', error);
+        //console.error('Error fetching project technologies:', error);
         return [];
       }
 
@@ -291,7 +291,7 @@ export const useGitHubSync = (): UseGitHubSyncReturn => {
             .flat()
         : [];
     } catch (err) {
-      console.error('Error in getTechnologiesByProject:', err);
+      //console.error('Error in getTechnologiesByProject:', err);
       return [];
     }
   }, []);

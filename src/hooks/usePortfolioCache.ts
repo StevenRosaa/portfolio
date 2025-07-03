@@ -143,7 +143,7 @@ const cacheUtils = {
         };
       }
     } catch (error) {
-      console.warn('Cache write failed:', error);
+      //console.warn('Cache write failed:', error);
     }
   },
 
@@ -157,7 +157,7 @@ const cacheUtils = {
       }
       return null;
     } catch (error) {
-      console.warn('Cache read failed:', error);
+      //console.warn('Cache read failed:', error);
       return null;
     }
   },
@@ -172,7 +172,7 @@ const cacheUtils = {
       }
       return false;
     } catch (error) {
-      console.warn('Cache validation failed:', error);
+      //console.warn('Cache validation failed:', error);
       return false;
     }
   },
@@ -197,7 +197,7 @@ const cacheUtils = {
         (window as any).__portfolioCache = {};
       }
     } catch (error) {
-      console.warn('Cache clear failed:', error);
+      //console.warn('Cache clear failed:', error);
     }
   }
 };
@@ -235,7 +235,7 @@ const getCurrentDataVersion = async (): Promise<string> => {
     const versionString = timestamps.join('|');
     return btoa(versionString).slice(0, 16);
   } catch (error) {
-    console.error('Error getting data version:', error);
+    //console.error('Error getting data version:', error);
     return Date.now().toString();
   }
 };
@@ -264,7 +264,7 @@ const fetchPortfolioConfig = async () => {
         try {
           value = JSON.parse(item.value);
         } catch (e) {
-          console.error('Error parsing JSON:', e);
+          //console.error('Error parsing JSON:', e);
         }
       } else if (item.data_type === 'boolean') {
         value = item.value === 'true';
@@ -319,7 +319,7 @@ const fetchPortfolioConfig = async () => {
       whyChooseMe
     };
   } catch (err) {
-    console.error('Error fetching portfolio configuration:', err);
+    //console.error('Error fetching portfolio configuration:', err);
     throw err;
   }
 };
@@ -335,7 +335,7 @@ const fetchSkills = async (): Promise<Skill[]> => {
     if (error) throw error;
     return data || [];
   } catch (err) {
-    console.error('Error fetching skills:', err);
+    //console.error('Error fetching skills:', err);
     throw err;
   }
 };
@@ -377,7 +377,7 @@ const fetchProjects = async (): Promise<Project[]> => {
     
     return [];
   } catch (err) {
-    console.error('Error fetching projects:', err);
+    //console.error('Error fetching projects:', err);
     throw err;
   }
 };
@@ -392,7 +392,7 @@ const loadAllData = async (forceRefresh = false): Promise<void> => {
     if (!forceRefresh) {
       const now = Date.now();
       if (now - globalState.lastFetch < CACHE_DURATION && globalState.data.personal) {
-        console.log('📦 Data is still fresh, skipping fetch');
+        //console.log('📦 Data is still fresh, skipping fetch');
         globalState.isLoading = false;
         notifyListeners();
         return;
@@ -404,7 +404,7 @@ const loadAllData = async (forceRefresh = false): Promise<void> => {
         const cachedLastFetch = cacheUtils.getCache(CACHE_KEYS.LAST_FETCH) || 0;
         
         if (cachedData && cachedData.personal) {
-          console.log('📦 Using cached portfolio data');
+          //console.log('📦 Using cached portfolio data');
           globalState.data = cachedData;
           globalState.lastFetch = cachedLastFetch;
           globalState.isLoading = false;
@@ -414,7 +414,7 @@ const loadAllData = async (forceRefresh = false): Promise<void> => {
       }
     }
 
-    console.log('🔄 Fetching fresh portfolio data from database...');
+    //console.log('🔄 Fetching fresh portfolio data from database...');
     
     const [configData, skills, projects] = await Promise.all([
       fetchPortfolioConfig(),
@@ -452,10 +452,10 @@ const loadAllData = async (forceRefresh = false): Promise<void> => {
     globalState.currentVersion = currentVersion;
     cacheUtils.setCache(CACHE_KEYS.VERSION, currentVersion);
 
-    console.log('✅ Portfolio data loaded from database');
+    //console.log('✅ Portfolio data loaded from database');
     notifyListeners();
   } catch (error) {
-    console.error('Error loading portfolio data:', error);
+    //console.error('Error loading portfolio data:', error);
     globalState.error = error instanceof Error ? error.message : 'Error loading portfolio data';
     globalState.isLoading = false;
     notifyListeners();
@@ -479,11 +479,11 @@ const startVersionCheck = () => {
       const cachedVersion = cacheUtils.getCache(CACHE_KEYS.VERSION);
       
       if (cachedVersion && newVersion !== cachedVersion && newVersion !== globalState.currentVersion) {
-        console.log('🔄 Data version changed, updating...');
+        //console.log('🔄 Data version changed, updating...');
         await loadAllData(true);
       }
     } catch (error) {
-      console.error('Error checking for updates:', error);
+      //console.error('Error checking for updates:', error);
     } finally {
       isCheckingVersion = false;
     }
@@ -512,7 +512,7 @@ const initializeAppData = async (): Promise<void> => {
 
   globalState.initializationPromise = (async () => {
     try {
-      console.log('🚀 Initializing app data from database...');
+      //console.log('🚀 Initializing app data from database...');
       
       // Prova prima la cache
       const hasValidCache = cacheUtils.isCacheValid(CACHE_KEYS.DATA);
@@ -520,7 +520,7 @@ const initializeAppData = async (): Promise<void> => {
       if (hasValidCache) {
         const cachedData = cacheUtils.getCache(CACHE_KEYS.DATA);
         if (cachedData && cachedData.personal) {
-          console.log('📦 Loading from cache...');
+          //console.log('📦 Loading from cache...');
           globalState.data = cachedData;
           globalState.lastFetch = cacheUtils.getCache(CACHE_KEYS.LAST_FETCH) || 0;
           globalState.isLoading = false;
@@ -533,9 +533,9 @@ const initializeAppData = async (): Promise<void> => {
         await loadAllData(false);
       }
       
-      console.log('✅ App initialized with database data');
+      //console.log('✅ App initialized with database data');
     } catch (error) {
-      console.error('❌ Error during initialization:', error);
+      //console.error('❌ Error during initialization:', error);
       globalState.error = 'Failed to initialize portfolio data from database';
       globalState.isLoading = false;
       notifyListeners();
@@ -590,7 +590,7 @@ export const usePortfolioCache = () => {
 
   // Funzione per aggiornamento manuale
   const refreshData = async () => {
-    console.log('🔄 Manual refresh triggered');
+    //console.log('🔄 Manual refresh triggered');
     await loadAllData(true);
   };
 
@@ -614,7 +614,7 @@ export const usePortfolioCache = () => {
       error: null,
       isLoading: true
     });
-    console.log('🗑️ Cache cleared');
+    //console.log('🗑️ Cache cleared');
   };
 
   return {

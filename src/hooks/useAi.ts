@@ -110,7 +110,7 @@ export const useAI = (): UseAIReturn => {
     } catch (err) {
       setIsConnected(false);
       setError('Impossibile verificare lo stato dell\'AI');
-      console.error('Health check error:', err);
+      //console.error('Health check error:', err);
       return null;
     }
   }, []);
@@ -192,7 +192,7 @@ export const useAI = (): UseAIReturn => {
       }
 
       const errorMessage = err instanceof Error ? err.message : 'Errore sconosciuto';
-      console.error('Errore invio messaggio:', err);
+      //console.error('Errore invio messaggio:', err);
       
       // Gestione retry automatico per errori di rete
       if (errorMessage.includes('connettersi') && retryCountRef.current < maxRetries) {

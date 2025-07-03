@@ -27,19 +27,19 @@ function verifySimpleJWT(token: string, secret: string): any {
     const payload = JSON.parse(atob(parts[1]))
     
     if (payload.exp && Date.now() / 1000 > payload.exp) {
-      console.log('🕒 Token JWT scaduto')
+      //console.log('🕒 Token JWT scaduto')
       return null
     }
     
     const expectedSignature = btoa(`${parts[0]}.${parts[1]}.${secret}`).replace(/=/g, '')
     if (parts[2] !== expectedSignature) {
-      console.log('🔑 Firma JWT non valida')
+      //console.log('🔑 Firma JWT non valida')
       return null
     }
     
     return payload
   } catch (error) {
-    console.error('❌ Errore verifica JWT:', error)
+    //console.error('❌ Errore verifica JWT:', error)
     return null
   }
 }
@@ -92,7 +92,7 @@ export class AuthService {
   // LOGIN PRINCIPALE - SEMPLIFICATO
   static async login(email: string, password: string, rememberMe: boolean = false): Promise<LoginResult> {
     try {
-      console.log('🔐 Tentativo login per:', email)
+      //console.log('🔐 Tentativo login per:', email)
 
       if (!email || !password) {
         return { success: false, error: 'Email e password sono richiesti' }
@@ -116,10 +116,10 @@ export class AuthService {
         .eq('email', email)
         .single()
 
-      console.log('📊 Query utente:', { user: !!user, error: fetchError })
+      //console.log('📊 Query utente:', { user: !!user, error: fetchError })
 
       if (fetchError || !user) {
-        console.log('❌ Utente non trovato')
+        //console.log('❌ Utente non trovato')
         return { success: false, error: 'Email o password non validi' }
       }
 
@@ -155,7 +155,7 @@ export class AuthService {
       const secret = import.meta.env.VITE_JWT_SECRET || 'tuo_segreto_sicuro'
       const token = createSimpleJWT(payload, secret, tokenHours)
 
-      console.log(`🔐 Token generato con scadenza: ${tokenHours} ore (Remember me: ${rememberMe})`)
+      //console.log(`🔐 Token generato con scadenza: ${tokenHours} ore (Remember me: ${rememberMe})`)
 
       return {
         success: true,
@@ -164,7 +164,7 @@ export class AuthService {
       }
 
     } catch (error) {
-      console.error('❌ Errore durante il login:', error)
+      //console.error('❌ Errore durante il login:', error)
       return {
         success: false,
         error: 'Errore interno del server'
@@ -196,7 +196,7 @@ export class AuthService {
 
       return user.is_locked || false
     } catch (error) {
-      console.error('❌ Errore controllo lockout:', error)
+      //console.error('❌ Errore controllo lockout:', error)
       return false
     }
   }
@@ -255,7 +255,7 @@ export class AuthService {
         .eq('email', email)
 
       if (updateError) {
-        console.error('❌ Errore aggiornamento tentativi:', updateError)
+        //console.error('❌ Errore aggiornamento tentativi:', updateError)
         return user.attempts
       }
 
@@ -265,7 +265,7 @@ export class AuthService {
 
       return newAttempts
     } catch (error) {
-      console.error('❌ Errore incremento tentativi:', error)
+      //console.error('❌ Errore incremento tentativi:', error)
       return 0
     }
   }
@@ -283,7 +283,7 @@ export class AuthService {
       .eq('email', email)
 
     if (error) {
-      console.error('❌ Errore reset tentativi:', error)
+      //console.error('❌ Errore reset tentativi:', error)
       
       // FALLBACK: Prova con query diretta se l'update normale fallisce
       const { error: fallbackError } = await supabase.rpc('reset_user_attempts', {
@@ -291,13 +291,13 @@ export class AuthService {
       })
       
       if (fallbackError) {
-        console.error('❌ Anche il fallback è fallito:', fallbackError)
+        //console.error('❌ Anche il fallback è fallito:', fallbackError)
       }
     } else {
-      console.log('✅ Tentativi resettati con successo')
+      //console.log('✅ Tentativi resettati con successo')
     }
   } catch (error) {
-    console.error('❌ Errore reset tentativi:', error)
+    //console.error('❌ Errore reset tentativi:', error)
   }
 }
 
@@ -328,7 +328,7 @@ export class AuthService {
         loginTime: payload.loginTime
       }
 
-      console.log('🔄 Token rinnovato automaticamente')
+      //console.log('🔄 Token rinnovato automaticamente')
       return createSimpleJWT(newPayload, secret, tokenHours)
     }
 
@@ -368,15 +368,15 @@ export class AuthService {
         })
 
       if (error) {
-        console.error('❌ Errore creazione sessione DB:', error)
+        //console.error('❌ Errore creazione sessione DB:', error)
         // Non bloccare il login se la sessione DB fallisce
       } else {
-        console.log(`📅 Sessione creata con scadenza: ${new Date(sessionInfo.expiresAt).toLocaleString()}`)
+        //console.log(`📅 Sessione creata con scadenza: ${new Date(sessionInfo.expiresAt).toLocaleString()}`)
       }
       
       return sessionInfo
     } catch (error) {
-      console.error('❌ Errore nella creazione della sessione:', error)
+      //console.error('❌ Errore nella creazione della sessione:', error)
       // Ritorna comunque le info della sessione anche se il DB fallisce
       const now = Date.now()
       const sessionDuration = rememberMe 
@@ -403,10 +403,10 @@ export class AuthService {
         .eq('is_active', true)
 
       if (error) {
-        console.error('❌ Errore aggiornamento attività:', error)
+        //console.error('❌ Errore aggiornamento attività:', error)
       }
     } catch (error) {
-      console.error('❌ Errore aggiornamento attività:', error)
+      //console.error('❌ Errore aggiornamento attività:', error)
     }
   }
 
@@ -420,7 +420,7 @@ export class AuthService {
         .single()
 
       if (error || !session) {
-        console.log('❌ Nessuna sessione attiva trovata nel DB')
+        //console.log('❌ Nessuna sessione attiva trovata nel DB')
         return false
       }
 
@@ -428,7 +428,7 @@ export class AuthService {
 
       // Controlla scadenza assoluta
       if (checkExpiration && session.expires_at && now > session.expires_at) {
-        console.log('⏰ Sessione scaduta per limite temporale')
+        //console.log('⏰ Sessione scaduta per limite temporale')
         return false
       }
 
@@ -436,14 +436,14 @@ export class AuthService {
       if (!session.remember_me) {
         const inactivityLimit = 2 * 60 * 60 * 1000 // 2 ore
         if ((now - session.last_activity) > inactivityLimit) {
-          console.log('😴 Sessione scaduta per inattività')
+          //console.log('😴 Sessione scaduta per inattività')
           return false
         }
       }
 
       return true
     } catch (error) {
-      console.error('❌ Errore verifica sessione:', error)
+      //console.error('❌ Errore verifica sessione:', error)
       return false
     }
   }
@@ -462,7 +462,7 @@ export class AuthService {
         .single()
 
       if (error || !session) {
-        console.log('❌ Nessuna info sessione trovata')
+        //console.log('❌ Nessuna info sessione trovata')
         return { expiresAt: null, remainingTime: 0, rememberMe: false }
       }
 
@@ -474,7 +474,7 @@ export class AuthService {
         rememberMe: session.remember_me || false
       }
     } catch (error) {
-      console.error('❌ Errore recupero info scadenza:', error)
+      //console.error('❌ Errore recupero info scadenza:', error)
       return { expiresAt: null, remainingTime: 0, rememberMe: false }
     }
   }
@@ -493,13 +493,13 @@ export class AuthService {
           .eq('is_active', true)
 
         if (error) {
-          console.error('❌ Errore logout DB:', error)
+          //console.error('❌ Errore logout DB:', error)
         }
       }
 
       return { success: true }
     } catch (error) {
-      console.error('❌ Errore durante il logout:', error)
+      //console.error('❌ Errore durante il logout:', error)
       return { success: true } // Non bloccare il logout per errori DB
     }
   }
@@ -515,12 +515,12 @@ export class AuthService {
         .eq('user_id', userId)
 
       if (error) {
-        console.error('❌ Errore logout tutti dispositivi:', error)
+        //console.error('❌ Errore logout tutti dispositivi:', error)
       }
 
       return { success: true }
     } catch (error) {
-      console.error('❌ Errore logout tutti dispositivi:', error)
+      //console.error('❌ Errore logout tutti dispositivi:', error)
       return { success: true }
     }
   }
@@ -541,7 +541,7 @@ export class AuthService {
       const remaining = Math.ceil((user.lockout_time - Date.now()) / 60000)
       return Math.max(0, remaining)
     } catch (error) {
-      console.error('❌ Errore tempo lockout:', error)
+      //console.error('❌ Errore tempo lockout:', error)
       return 0
     }
   }
@@ -562,7 +562,7 @@ export class AuthService {
 
       return !error
     } catch (error) {
-      console.error('❌ Errore creazione utente:', error)
+      //console.error('❌ Errore creazione utente:', error)
       return false
     }
   }

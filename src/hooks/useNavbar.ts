@@ -27,7 +27,7 @@ export const useNavbar = (): UseNavbarReturn => {
       const saved = localStorage.getItem(NAVBAR_STORAGE_KEY);
       return saved ? JSON.parse(saved) : false;
     } catch (error) {
-      console.warn('Errore nel leggere lo stato navbar dal localStorage:', error);
+      //console.warn('Errore nel leggere lo stato navbar dal localStorage:', error);
       return false;
     }
   });
@@ -40,7 +40,7 @@ export const useNavbar = (): UseNavbarReturn => {
     try {
       localStorage.setItem(NAVBAR_STORAGE_KEY, JSON.stringify(isNavCollapsed));
     } catch (error) {
-      console.warn('Errore nel salvare lo stato navbar nel localStorage:', error);
+      //console.warn('Errore nel salvare lo stato navbar nel localStorage:', error);
     }
   }, [isNavCollapsed]);
 

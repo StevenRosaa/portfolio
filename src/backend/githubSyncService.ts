@@ -31,7 +31,7 @@ class GitHubSyncService {
     this.GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME || '';
     
     if (!this.GITHUB_TOKEN || !this.GITHUB_USERNAME) {
-      console.error('GitHub token or username not configured');
+      //console.error('GitHub token or username not configured');
     }
   }
 
@@ -67,7 +67,7 @@ class GitHubSyncService {
         });
         
       } catch (error) {
-        console.error(`Error fetching repositories for topic ${topic}:`, error);
+        //console.error(`Error fetching repositories for topic ${topic}:`, error);
       }
     }
 
@@ -127,7 +127,7 @@ class GitHubSyncService {
       throw new Error(`Error creating technology: ${createError.message}`);
     }
 
-    console.log(`Created new technology: ${normalizedName}`);
+    //console.log(`Created new technology: ${normalizedName}`);
     return newTechnology.id;
   }
 
@@ -153,7 +153,7 @@ class GitHubSyncService {
       .eq('project_id', projectId);
 
     if (deleteError) {
-      console.error(`Error removing existing project technologies:`, deleteError);
+      //console.error(`Error removing existing project technologies:`, deleteError);
       return;
     }
 
@@ -168,7 +168,7 @@ class GitHubSyncService {
           technology_id: technologyId
         });
       } catch (error) {
-        console.error(`Error processing technology ${topic}:`, error);
+        //console.error(`Error processing technology ${topic}:`, error);
       }
     }
 
@@ -178,9 +178,9 @@ class GitHubSyncService {
         .insert(projectTechnologies);
 
       if (insertError) {
-        console.error(`Error creating project technologies:`, insertError);
+        //console.error(`Error creating project technologies:`, insertError);
       } else {
-        console.log(`Added ${projectTechnologies.length} technologies to project ${projectId}`);
+        //console.log(`Added ${projectTechnologies.length} technologies to project ${projectId}`);
       }
     }
   }
@@ -331,12 +331,12 @@ class GitHubSyncService {
           .eq('github_id', repo.id);
 
         if (updateError) {
-          console.error(`Error updating project ${repo.name}:`, updateError);
+          //console.error(`Error updating project ${repo.name}:`, updateError);
           return;
         }
         
         projectId = existingProject.id;
-        console.log(`Updated project: ${repo.name}`);
+        //console.log(`Updated project: ${repo.name}`);
       } else {
         // Crea nuovo progetto
         const { data: newProject, error: insertError } = await supabase
@@ -346,19 +346,19 @@ class GitHubSyncService {
           .single();
 
         if (insertError) {
-          console.error(`Error creating project ${repo.name}:`, insertError);
+          //console.error(`Error creating project ${repo.name}:`, insertError);
           return;
         }
         
         projectId = newProject.id;
-        console.log(`Created project: ${repo.name}`);
+        //console.log(`Created project: ${repo.name}`);
       }
 
       // Sincronizza le technologies per questo progetto
       await this.syncProjectTechnologies(projectId, repo.topics);
 
     } catch (error) {
-      console.error(`Error syncing repository ${repo.name}:`, error);
+      //console.error(`Error syncing repository ${repo.name}:`, error);
     }
   }
 
@@ -374,7 +374,7 @@ class GitHubSyncService {
         .not('github_id', 'is', null);
 
       if (fetchError) {
-        console.error('Error fetching database projects:', fetchError);
+        //console.error('Error fetching database projects:', fetchError);
         return;
       }
 
@@ -393,13 +393,13 @@ class GitHubSyncService {
           .eq('id', project.id);
 
         if (updateError) {
-          console.error(`Error deactivating project ${project.title}:`, updateError);
+          //console.error(`Error deactivating project ${project.title}:`, updateError);
         } else {
-          console.log(`Deactivated deleted project: ${project.title}`);
+          //console.log(`Deactivated deleted project: ${project.title}`);
         }
       }
     } catch (error) {
-      console.error('Error removing deleted repositories:', error);
+      //console.error('Error removing deleted repositories:', error);
     }
   }
 
@@ -408,7 +408,7 @@ class GitHubSyncService {
    */
   public async syncRepositories(): Promise<{ success: boolean; message: string; stats: any }> {
     try {
-      console.log('Starting GitHub repository synchronization...');
+      //console.log('Starting GitHub repository synchronization...');
       
       // Recupera tutti i repository con i topic specificati
       const repos = await this.fetchRepositoriesWithTopics();
@@ -421,7 +421,7 @@ class GitHubSyncService {
         };
       }
 
-      console.log(`Found ${repos.length} repositories to sync`);
+      //console.log(`Found ${repos.length} repositories to sync`);
 
       let created = 0;
       let updated = 0;
@@ -454,7 +454,7 @@ class GitHubSyncService {
         deactivated: 0 // Potresti voler tracciare questo
       };
 
-      console.log('Synchronization completed successfully', stats);
+      //console.log('Synchronization completed successfully', stats);
 
       return {
         success: true,
@@ -463,7 +463,7 @@ class GitHubSyncService {
       };
 
     } catch (error) {
-      console.error('Error during synchronization:', error);
+      //console.error('Error during synchronization:', error);
       return {
         success: false,
         message: `Synchronization failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -486,7 +486,7 @@ class GitHubSyncService {
       this.syncRepositories();
     }, intervalMs);
     
-    console.log(`Auto-sync started. Will sync every ${intervalMinutes} minutes.`);
+    //console.log(`Auto-sync started. Will sync every ${intervalMinutes} minutes.`);
   }
 }
 

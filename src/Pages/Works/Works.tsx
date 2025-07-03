@@ -368,7 +368,7 @@ export function Works() {
   const { isAuthenticated, logout } = useAuth();
   
   // ✨ Usa il hook ottimizzato per i portfolio data
-  const { worksData, error, refreshData, clearCache, getCacheInfo } = useWorksData() as unknown as {
+  const { worksData, error, refreshData, clearCache } = useWorksData() as unknown as {
     data: any;
     worksData: WorksData;
     error: any;
@@ -396,13 +396,12 @@ export function Works() {
   };
 
   const handleManualRefresh = () => {
-    console.log('🔄 Manual refresh triggered');
+    //console.log('🔄 Manual refresh triggered');
     refreshData();
   };
 
   const handleDebugCache = () => {
-    const cacheInfo = getCacheInfo();
-    console.log('📊 Cache Info:', cacheInfo);
+    //console.log('📊 Cache Info:', cacheInfo);
   };
 
   const renderAiSection = () => (
@@ -421,7 +420,7 @@ export function Works() {
 
   // Debug info
   if (error) {
-    console.warn('⚠️ Portfolio data error:', error);
+    //console.warn('⚠️ Portfolio data error:', error);
   }
 
   return (

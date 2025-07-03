@@ -165,9 +165,7 @@ function Home() {
       data, 
       error, 
       refreshData, 
-      clearCache,
-      getCacheInfo 
-    } = usePortfolioCache();
+      clearCache    } = usePortfolioCache();
     
     // Genera posizioni fisse per le stelle usando useMemo
     const starsData = useMemo(() => {
@@ -228,13 +226,12 @@ function Home() {
     };
 
     const handleManualRefresh = () => {
-      console.log('🔄 Manual refresh triggered');
+      //console.log('🔄 Manual refresh triggered');
       refreshData();
     };
 
     const handleDebugCache = () => {
-      const cacheInfo = getCacheInfo();
-      console.log('📊 Cache Info:', cacheInfo);
+      //console.log('📊 Cache Info:', cacheInfo);
     };
 
     const handleDropdownToggle = () => {
@@ -248,7 +245,7 @@ function Home() {
     
     // Gestione errori
     if (error) {
-      console.warn('Portfolio data error:', error);
+      //console.warn('Portfolio data error:', error);
     }
     
     return (

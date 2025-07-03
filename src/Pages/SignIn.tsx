@@ -56,20 +56,20 @@ export const SignIn: React.FC = () => {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!formData.email || !formData.password) {
-      return
-    }
-
-    const result = await login(formData.email, formData.password)
-    
-    if (result.isLocked) {
-      // Ottieni il tempo di lockout rimanente
-      const remaining = await getRemainingLockoutTime(formData.email)
-      setLockoutTime(remaining)
-    }
+  e.preventDefault()
+  
+  if (!formData.email || !formData.password) {
+    return
   }
+
+  // ✅ PASSA ANCHE rememberMe dal formData
+  const result = await login(formData.email, formData.password, formData.rememberMe)
+  
+  if (result.isLocked) {
+    const remaining = await getRemainingLockoutTime(formData.email)
+    setLockoutTime(remaining)
+  }
+}
 
   const isAccountLocked = () => isLocked || lockoutTime > 0
 
@@ -127,15 +127,6 @@ export const SignIn: React.FC = () => {
                 <p className="text-red-300 text-xs sm:text-sm leading-relaxed">{error}</p>
               </div>
             )}
-
-            {/* Demo credentials info - solo per sviluppo */}
-            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-              <p className="text-blue-300 text-xs sm:text-sm font-medium mb-2">Demo Credentials:</p>
-              <div className="space-y-1 text-xs text-blue-200">
-                <p className="break-all"><strong>Email:</strong> admin@portfolio.com</p>
-                <p><strong>Password:</strong> SecureP@ssw0rd123!</p>
-              </div>
-            </div>
 
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
@@ -241,13 +232,6 @@ export const SignIn: React.FC = () => {
                 </button>
               </p>
             </div>
-          </div>
-
-          {/* Additional Info */}
-          <div className="mt-4 sm:mt-8 text-center">
-            <p className="text-xs sm:text-sm text-gray-500 px-4">
-              Secure admin access for portfolio management
-            </p>
           </div>
         </div>
       </div>
