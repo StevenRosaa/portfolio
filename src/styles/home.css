@@ -1,0 +1,215 @@
+          @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+          }
+
+          @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+          }
+
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+
+          @keyframes slideUpFade {
+            0% {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes slideLeftFade {
+            0% {
+              opacity: 0;
+              transform: translateX(30px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+
+          @keyframes scaleIn {
+            0% {
+              opacity: 0;
+              transform: scale(0.95);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+
+          @keyframes glowIn {
+            0% {
+              opacity: 0;
+              filter: blur(10px);
+            }
+            100% {
+              opacity: 1;
+              filter: blur(0px);
+            }
+          }
+
+          @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+          }
+
+          @keyframes matrix {
+            0% {
+              opacity: 0;
+              transform: translateY(20px) scale(0.9);
+              filter: blur(5px);
+            }
+            50% {
+              opacity: 0.7;
+              filter: blur(2px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+              filter: blur(0px);
+            }
+          }
+
+          @keyframes hologram {
+            0% {
+              opacity: 0;
+              transform: translateY(20px) rotateX(90deg);
+            }
+            50% {
+              opacity: 0.8;
+              transform: translateY(10px) rotateX(45deg);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0) rotateX(0deg);
+            }
+          }
+
+          @keyframes cyberpunk {
+            0% {
+              opacity: 0;
+              transform: translateX(-100px) skewX(-20deg);
+              filter: hue-rotate(180deg) brightness(2);
+            }
+            50% {
+              opacity: 0.7;
+              filter: hue-rotate(90deg) brightness(1.5);
+            }
+            100% {
+              opacity: 1;
+              transform: translateX(0) skewX(0deg);
+              filter: hue-rotate(0deg) brightness(1);
+            }
+          }
+
+          @keyframes neon {
+            0% {
+              opacity: 0;
+              text-shadow: 0 0 10px #8b5cf6, 0 0 20px #8b5cf6, 0 0 30px #8b5cf6;
+            }
+            50% {
+              opacity: 0.8;
+              text-shadow: 0 0 20px #8b5cf6, 0 0 30px #8b5cf6, 0 0 40px #8b5cf6;
+            }
+            100% {
+              opacity: 1;
+              text-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6, 0 0 15px #8b5cf6;
+            }
+          }
+
+          @keyframes quantum {
+            0% {
+              opacity: 0;
+              transform: translate(-50px, 50px) rotate(-180deg) scale(0.3);
+              filter: blur(20px) hue-rotate(360deg);
+            }
+            25% {
+              opacity: 0.3;
+              transform: translate(-25px, 25px) rotate(-90deg) scale(0.6);
+              filter: blur(10px) hue-rotate(270deg);
+            }
+            50% {
+              opacity: 0.6;
+              transform: translate(-10px, 10px) rotate(-45deg) scale(0.8);
+              filter: blur(5px) hue-rotate(180deg);
+            }
+            75% {
+              opacity: 0.8;
+              transform: translate(-5px, 5px) rotate(-20deg) scale(0.9);
+              filter: blur(2px) hue-rotate(90deg);
+            }
+            100% {
+              opacity: 1;
+              transform: translate(0, 0) rotate(0deg) scale(1);
+              filter: blur(0px) hue-rotate(0deg);
+            }
+          }
+
+          .animate-blink {
+            animation: blink 1s infinite;
+          }
+
+          .animate-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite ease-in-out;
+          }
+
+          .animate-slideUpFade {
+            animation: slideUpFade 0.8s ease-out forwards;
+          }
+
+          .animate-slideLeftFade {
+            animation: slideLeftFade 0.8s ease-out forwards;
+          }
+
+          .animate-scaleIn {
+            animation: scaleIn 0.6s ease-out forwards;
+          }
+
+          .animate-glowIn {
+            animation: glowIn 1s ease-out forwards;
+          }
+
+          .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out forwards;
+          }
+
+          .animate-matrix {
+            animation: matrix 1.2s ease-out forwards;
+          }
+
+          .animate-hologram {
+            animation: hologram 1s ease-out forwards;
+            perspective: 1000px;
+          }
+
+          .animate-cyberpunk {
+            animation: cyberpunk 1.5s ease-out forwards;
+          }
+
+          .animate-neon {
+            animation: neon 1.8s ease-out forwards;
+          }
+
+          .animate-quantum {
+            animation: quantum 2s ease-out forwards;
+          }
+
+          .stagger-1 { animation-delay: 0.1s; }
+          .stagger-2 { animation-delay: 0.2s; }
+          .stagger-3 { animation-delay: 0.3s; }
+          .stagger-4 { animation-delay: 0.4s; }
+          .stagger-5 { animation-delay: 0.5s; }
+          .stagger-6 { animation-delay: 0.6s; }
+          .stagger-7 { animation-delay: 0.7s; }
+          .stagger-8 { animation-delay: 0.8s; }
