@@ -284,15 +284,15 @@ const fetchPortfolioConfig = async () => {
       github: configBySection.personal.github || '',
       linkedin: configBySection.personal.linkedin || ''
     } : null;
-
+    configBySection.about.image_url = 'https://lcbqpsovddpacacdgnuz.supabase.co/storage/v1/object/public/img//img.jpeg'
     // CORREZIONE: Costruzione corretta dell'array paragraphs
     const about: AboutConfig | null = configBySection.about ? {
       title: configBySection.about.title || '',
-      imageUrl: configBySection.about.image_url || '', // Nota: image_url nel DB
+      imageUrl: configBySection.about.image_url || '', // ← Questo dovrebbe funzionare correttamente
       paragraphs: [
         configBySection.about.paragraph_1,
         configBySection.about.paragraph_2
-      ].filter(Boolean) // Rimuove eventuali valori null/undefined
+      ].filter(Boolean)
     } : null;
 
     const contact: ContactConfig | null = configBySection.contact ? {

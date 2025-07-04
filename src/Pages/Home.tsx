@@ -394,29 +394,59 @@ function Home() {
               </div>
               
               <StaggeredContent delay={1200} animationType="hologram">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-600/30 to-cyan-600/30 rounded-3xl blur-2xl animate-pulse"></div>
-                  <div className="relative w-full h-96 rounded-3xl bg-gradient-to-br from-violet-500/10 via-purple-500/10 to-cyan-500/10 backdrop-blur-md border border-violet-500/30 overflow-hidden group shadow-2xl hover:shadow-violet-500/20 transition-all duration-700">
-                    <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    {aboutConfig?.imageUrl ? (
-                      <img 
-                        src={aboutConfig.imageUrl} 
-                        alt={personalConfig?.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full">
-                        <div className="text-center">
-                          <div className="w-20 h-20 bg-violet-500/20 rounded-full mx-auto mb-4 flex items-center justify-center backdrop-blur-sm border border-violet-500/30">
-                            <span className="text-4xl">👨‍💻</span>
-                          </div>
-                          <p className="text-white/60 text-sm font-light">Your photo here</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </StaggeredContent>
+  <div className="relative">
+    <div className="absolute inset-0 bg-gradient-to-br from-violet-600/30 to-cyan-600/30 rounded-3xl blur-2xl animate-pulse"></div>
+    <div className="relative w-full h-96 rounded-3xl bg-gradient-to-br from-violet-500/10 via-purple-500/10 to-cyan-500/10 backdrop-blur-md border border-violet-500/30 overflow-hidden group shadow-2xl hover:shadow-violet-500/20 transition-all duration-700">
+      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      
+      {/* Fixed image URL logic */}
+      {aboutConfig?.imageUrl ? (
+        <img 
+          src={aboutConfig.imageUrl} 
+          alt={personalConfig?.name || 'Profile'}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          onError={(e) => {
+            const img = e.target as HTMLImageElement;
+            console.error('❌ Image failed to load:', img.src);
+            // Hide image and show fallback
+            img.style.display = 'none';
+            const fallback = img.parentElement?.querySelector('.fallback-content') as HTMLElement;
+            if (fallback) {
+              fallback.style.display = 'flex';
+            }
+          }}
+          onLoad={() => {
+            console.log('✅ Image loaded successfully:', aboutConfig.imageUrl);
+          }}
+        />
+      ) : null}
+      
+      {/* Fallback content - always present, shown when no image or image fails */}
+      <div 
+        className="fallback-content flex items-center justify-center h-full"
+        style={{ 
+          display: aboutConfig?.imageUrl ? 'none' : 'flex' 
+        }}
+      >
+        <div className="text-center">
+          <div className="w-20 h-20 bg-violet-500/20 rounded-full mx-auto mb-4 flex items-center justify-center backdrop-blur-sm border border-violet-500/30">
+            <span className="text-4xl">👨‍💻</span>
+          </div>
+          <p className="text-white/60 text-sm font-light">
+            {aboutConfig?.imageUrl ? 'Loading image...' : 'Image not configured'}
+          </p>
+          {/* Debug info in development */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-2 text-xs text-red-400">
+              <p>Debug: imageUrl = {aboutConfig?.imageUrl || 'undefined'}</p>
+              <p>Debug: about config = {JSON.stringify(aboutConfig, null, 2)}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+</StaggeredContent>
             </div>
           </div>
         </section>
