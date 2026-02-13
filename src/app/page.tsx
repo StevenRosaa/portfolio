@@ -8,6 +8,7 @@ import { StatusHeader } from "@/components/sections/StatusHeader";
 import { StackCard } from "@/components/sections/StackCard";
 import { LocationCard } from "@/components/sections/LocationCard";
 import { ConnectCard } from "@/components/sections/ConnectCard";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const profile = getProfile();
@@ -21,11 +22,22 @@ export default function Home() {
           {/* 1. HEADER (Status and Title) */}
           <StatusHeader />
 
-          {/* 2. GRID */}
+          {/* 2. GRID LAYOUT */}
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-[auto]">
             
-            {/* A. HERO SECTION */}
-            <BentoCard className="col-span-1 md:col-span-2 lg:col-span-2 row-span-1 md:row-span-2 bg-gradient-to-br from-white via-white to-gray-50 p-0 overflow-hidden relative border-0">
+            {/* A. HERO SECTION (Modified for Mobile) */}
+            <BentoCard 
+              className={cn(
+                "col-span-1 md:col-span-2 lg:col-span-2 row-span-1 md:row-span-2",
+                "bg-gradient-to-br from-white via-white to-gray-50",
+                "p-0 overflow-hidden relative border-0",
+                // --- FIX FOR MOBILE ---
+                // h-auto: Allows the card to grow with the text on mobile
+                // min-h-[300px]: Prevents it from being too small
+                // md:h-full: Forces it to fill the grid cell on desktop
+                "h-auto min-h-[300px] md:h-full" 
+              )}
+            >
               <Hero profile={profile} />
             </BentoCard>
 

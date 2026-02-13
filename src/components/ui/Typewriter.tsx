@@ -1,69 +1,73 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 interface TypewriterProps {
   text: string;
-  speed?: number; // Typing speed in milliseconds per character
-  delay?: number; // Initial delay before typing starts
+  speed?: number;
+  delay?: number;
+  className?: string;
 }
 
-export function Typewriter({ text, speed = 30, delay = 500 }: TypewriterProps) {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
+export function Typewriter({ 
+  text, 
+  speed = 30, 
+  delay = 500,
+  className 
+}: TypewriterProps) {
+  const [displayedIndex, setDisplayedIndex] = useState(0);
+  const [started, setStarted] = useState(false);
+  const [isCursorVisible, setIsCursorVisible] = useState(true);
 
+  // Handle initial start delay
   useEffect(() => {
-    // Reset state when props change to handle navigation or prop updates
-    setDisplayedText("");
-    setIsComplete(false);
-    setHasStarted(false);
-
-    // Handle initial start delay
-    const startTimeout = setTimeout(() => {
-      setHasStarted(true);
+    const timeout = setTimeout(() => {
+      setStarted(true);
     }, delay);
+    return () => clearTimeout(timeout);
+  }, [delay]);
 
-    return () => clearTimeout(startTimeout);
-  }, [text, delay]);
-
+  // Handle typing effect and cursor lifecycle
   useEffect(() => {
-    if (!hasStarted) return;
+    if (!started) return;
 
-    let currentIndex = 0;
-    
-    // Typing interval logic
-    const intervalId = setInterval(() => {
-      if (currentIndex < text.length) {
-        // Using slice ensures text consistency across re-renders/strict mode
-        setDisplayedText(text.slice(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        clearInterval(intervalId);
-        setIsComplete(true);
-      }
-    }, speed);
-
-    return () => clearInterval(intervalId);
-  }, [text, speed, hasStarted]);
+    if (displayedIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedIndex((prev) => prev + 1);
+      }, speed);
+      return () => clearTimeout(timeout);
+    } else {
+      // Hide cursor 1.5s after typing completes
+      const cursorTimeout = setTimeout(() => {
+        setIsCursorVisible(false);
+      }, 1500);
+      return () => clearTimeout(cursorTimeout);
+    }
+  }, [displayedIndex, started, text.length, speed]);
 
   return (
-    <span className="whitespace-pre-wrap font-mono md:font-sans">
-      {displayedText}
+    <div className={cn("inline-block whitespace-pre-wrap", className)} aria-label={text}>
       
-      {/* Blinking Cursor with Exit Animation */}
-      <AnimatePresence>
-        {!isComplete && (
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
-            transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-            className="inline-block w-[3px] h-[1.2em] bg-blue-500 ml-1 align-bottom rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)]"
-          />
-        )}
-      </AnimatePresence>
-    </span>
+      {/* Visible (Typed) Text */}
+      <span className="relative">
+        {text.slice(0, displayedIndex)}
+        
+        {/* Animated Cursor */}
+        <span 
+          className={cn(
+            "ml-[2px] w-[3px] h-[1.1em] bg-[#007AFF] inline-block align-middle rounded-full shadow-[0_0_8px_rgba(0,122,255,0.5)]",
+            "transition-all duration-700 ease-out",
+            isCursorVisible ? "opacity-100 animate-pulse" : "opacity-0 w-0 ml-0"
+          )}
+        />
+      </span>
+
+      {/* Invisible Text (Space Reservation) */}
+      <span className="opacity-0 select-none pointer-events-none">
+        {text.slice(displayedIndex)}
+      </span>
+      
+    </div>
   );
 }

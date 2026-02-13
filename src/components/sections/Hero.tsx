@@ -11,27 +11,25 @@ interface HeroProps {
 
 export function Hero({ profile }: HeroProps) {
   return (
-    <div className="relative h-full w-full overflow-hidden">
-        {/* Decorative fixed background gradient */}
+    <div className="relative w-full h-full">
+        
+        {/* Sfondo decorativo */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-blue-100/40 to-purple-100/40 rounded-full blur-3xl -z-10 opacity-60 pointer-events-none" />
 
-        {/* Main Flex Container.
-            We do not use the 'layout' prop here to avoid conflicts with Typewriter re-renders.
-            Layout stability is handled by the Ghost Text strategy below.
-        */}
-        <div className="flex flex-col h-full justify-center p-8 md:p-12 gap-8 z-10">
+        {/* Flex Container */}
+        <div className="flex flex-col min-h-full justify-center p-6 md:p-12 gap-8 z-10 relative">
                 
-            {/* --- HEADER: AVATAR + TITLE --- */}
-            <div className="flex flex-col md:flex-row items-center md:items-center gap-6 md:gap-8 w-full">
-            
-                {/* Avatar Image with Motion */}
+            {/* --- HEADER --- */}
+            <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 w-full">
+                
+                {/* Avatar */}
                 <motion.div 
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, ease: "backOut" }}
                     className="relative shrink-0 group"
                 >
-                    <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-[2rem] overflow-hidden border-4 border-white shadow-2xl rotate-2 group-hover:rotate-0 transition-all duration-500 ease-out">
+                    <div className="relative w-28 h-28 md:w-40 md:h-40 rounded-[2rem] overflow-hidden border-4 border-white shadow-2xl rotate-2 group-hover:rotate-0 transition-all duration-500 ease-out">
                         <Image 
                             src={profile.avatar} 
                             alt={profile.name} 
@@ -40,9 +38,8 @@ export function Hero({ profile }: HeroProps) {
                             priority
                         />
                     </div>
-                    {/* Online Status Badge */}
                     <div className="absolute -bottom-2 -right-2 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100 flex items-center gap-2 z-10">
-                        <span className="relative flex h-2 w-2">
+                         <span className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                         </span>
@@ -50,7 +47,7 @@ export function Hero({ profile }: HeroProps) {
                     </div>
                 </motion.div>
 
-                {/* Title and Subtitle */}
+                {/* Title */}
                 <motion.div 
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -68,22 +65,14 @@ export function Hero({ profile }: HeroProps) {
             </div>
 
             {/* --- BIOGRAPHY SECTION --- */}
-            <div className="w-full max-w-2xl mx-auto md:mx-0 relative">
-                
-                {/* Ghost Element:
-                    Invisible copy of the full text to reserve DOM space and prevent layout shifts/jank.
-                */}
-                <div className="text-lg md:text-xl font-medium leading-relaxed text-center md:text-left opacity-0 select-none pointer-events-none" aria-hidden="true">
-                    {profile.bio}
+            <div className="w-full max-w-2xl mx-auto md:mx-0">
+                <div className="text-lg md:text-xl text-neutral-500 font-medium leading-relaxed text-center md:text-left min-h-[100px]">
+                    <Typewriter 
+                        text={profile.bio} 
+                        speed={25} 
+                        delay={800} 
+                    />
                 </div>
-
-                {/* Visible Element:
-                    Absolute positioned Typewriter component overlying the ghost text.
-                */}
-                <div className="absolute top-0 left-0 w-full h-full text-lg md:text-xl text-neutral-500 font-medium leading-relaxed text-center md:text-left">
-                    <Typewriter text={profile.bio} speed={25} delay={800} />
-                </div>
-
             </div>
 
         </div>
