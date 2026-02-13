@@ -28,7 +28,7 @@ export function BackgroundBlobs() {
       <div className="absolute inset-0 backdrop-blur-[100px]" />
 
       {/* 3. Noise Overlay texture */}
-      <div className="absolute inset-0 bg-noise opacity-[0.06] mix-blend-overlay pointer-events-none" />
+      <div className="hidden md:block absolute inset-0 bg-noise opacity-[0.06] mix-blend-overlay pointer-events-none" />
       
     </div>
   );

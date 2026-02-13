@@ -9,13 +9,15 @@ export function MacWrapper({ children }: { children: ReactNode }) {
     <div className="min-h-screen w-full flex flex-col md:items-center md:justify-center md:p-8 lg:p-12 overflow-hidden bg-transparent">
       
       <div className={cn(
-        // Base Glassmorphism & Layout
-        "w-full h-full bg-white/85 backdrop-blur-2xl flex flex-col",
-        // Mobile: Full screen, square corners
+        // Mobile
+        "w-full h-full flex flex-col bg-[#F5F5F7]", 
+
+        // Desktop
+        "md:bg-white/85 md:backdrop-blur-2xl",
+        
         "min-h-screen md:min-h-0", 
-        // Desktop: Fixed height (85vh), rounded corners, deep shadow, window border
         "md:h-[85vh] md:max-w-7xl md:rounded-2xl md:shadow-2xl md:border md:border-white/20"
-      )}>
+        )}>
         
         {/* MacOS Style Header */}
         <MacHeader />
