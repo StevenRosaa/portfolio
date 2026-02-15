@@ -1,16 +1,19 @@
 ---
-title: "E-Commerce Dashboard"
-description: "Una dashboard analitica per gestire vendite e inventario in tempo reale."
-coverImage: "/images/portfolio/dashboard-cover.jpg"
-tags: ["Next.js", "Tailwind", "Supabase"]
+title: "Project Sul-Sul"
+description: "A highly interactive, web-based recreation of The Sims 3 UI, built as a personalized digital experience."
+coverImage: "/images/portfolio/project-sul-sul-cover.png"
+tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"]
 linkDemo: ""
-linkRepo: "https://github.com"
-images:
-  - "/images/portfolio/dashboard-1.jpg"
-  - "/images/portfolio/dashboard-2.jpg"
+linkRepo: "https://github.com/StevenRosaa/project-sul-sul"
+images: []
 ---
 
-Questo progetto nasce dall'esigenza di avere un controllo granulare sui dati di vendita. Ho utilizzato **Recharts** per i grafici e **Supabase** per il database real-time.
+This project was born from the desire to create a unique, nostalgic, and highly personalized digital gift. I faithfully recreated the iconic user interface of *The Sims 3*, complete with a dynamic audio engine for original sound effects, a continuous background music playlist, and a fully functional radial "Pie Menu". 
 
-### Sfide principali
-La sfida più grande è stata ottimizzare il rendering dei grafici con migliaia di data-points.
+Beyond the UI, the project focuses heavily on micro-interactions and state management to deliver a seamless, game-like user experience directly in the browser.
+
+### Main Challenges
+
+* **Circular UI Trigonometry:** The biggest UI challenge was building a dynamic Pie Menu from scratch. I used standard trigonometric functions (`Math.sin` and `Math.cos`) to calculate the exact X and Y coordinates, ensuring the action buttons are always positioned in a perfect circle around the user's click point, regardless of screen size.
+* **Audio & Browser Autoplay Policies:** Modern browsers strictly block autoplaying media with sound. To bypass this seamlessly without ruining the user experience, I engineered a "Start Simulation" loading screen. The user's initial interaction with this screen natively unlocks the HTML5 Audio engine, allowing the intro video, background music, and UI sound effects to trigger flawlessly.
+* **Complex State Animations:** Orchestrating smooth entering and exiting animations for modals, interactive menus, and the continuously floating "Plumbob" required advanced usage of **Framer Motion** (`AnimatePresence`, spring physics, and keyframes).
